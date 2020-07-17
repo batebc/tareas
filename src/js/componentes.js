@@ -2,11 +2,13 @@ import { Todo } from "../class";
 import { todoList } from '../index'
 
 // Referencias  en el html 
-const divTodoList   = document.querySelector('.todo-list');
-const txtInput      =  document.querySelector('.new-todo');
-const btnBoorar     =  document.querySelector('.clear-completed');
-const ulFiltros     =  document.querySelector('.filters');
-const anchorFiltros =  document.querySelectorAll('.filtro');
+const divTodoList    = document.querySelector('.todo-list');
+const txtInput       = document.querySelector('.new-todo');
+const btnBoorar      = document.querySelector('.clear-completed');
+const ulFiltros      = document.querySelector('.filters');
+const anchorFiltros  = document.querySelectorAll('.filtro');
+const strongContador = document.querySelector('strong');
+
 
 
 export const crearTodoHtml = ( todo ) => {
@@ -29,16 +31,25 @@ export const crearTodoHtml = ( todo ) => {
 
 }
 
+export const contador = () => {
+    let contador = 0;
+    for( let elemento of divTodoList.children){
+        const completado = elemento.classList.contains('completed');
+        contador =  !completado ? contador+1 : contador;  
+    }
+    strongContador.innerText = contador;
+}
+
 
 
 txtInput.addEventListener('keyup', ( event ) => {
 
     if ( event.keyCode === 13 && txtInput.value.length > 0 ){
-
         const todo = new Todo( txtInput.value );
         todoList.nuevoTodo( todo );
         crearTodoHtml(todo);
         txtInput.value = '';
+        contador();
     }
 
 });
@@ -51,6 +62,7 @@ divTodoList.addEventListener('click' , ( event ) => {
     if( nombreElemento.includes('input') ){
         todoList.marcarCompletado( todoId );
         todoElemento.classList.toggle('completed');
+        contador();
     }else if ( nombreElemento.includes('button')){
         todoList.eliminar( todoId );
         divTodoList.removeChild( todoElemento );
